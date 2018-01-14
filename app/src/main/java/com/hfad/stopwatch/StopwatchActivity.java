@@ -12,6 +12,7 @@ public class StopwatchActivity extends Activity {
 
     private boolean isRunning = false;
     private int secondsPassed = 0;
+    private boolean wasRunning = false;
 
     private void runTimer() {
         final TextView timerView = (TextView) findViewById(R.id.time_view);
@@ -41,6 +42,7 @@ public class StopwatchActivity extends Activity {
         if ( savedInstanceState != null ) {
             secondsPassed = savedInstanceState.getInt("secondsPassed");
             isRunning = savedInstanceState.getBoolean("isRunning");
+            wasRunning = savedInstanceState.getBoolean("wasRunning");
         }
         runTimer();
     }
@@ -58,8 +60,26 @@ public class StopwatchActivity extends Activity {
         secondsPassed = 0;
     }
 
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt("secondsPassed",secondsPassed);
         savedInstanceState.putBoolean("isRunning",isRunning);
+        savedInstanceState.putBoolean("wasRunning",wasRunning);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        wasRunning = isRunning;
+        isRunning = false;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(wasRunning) {
+            isRunning = true;
+        }
+    }
+
 }
